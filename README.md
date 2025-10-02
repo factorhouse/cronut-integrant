@@ -1,6 +1,6 @@
 # Cronut-Integrant: Integrant bindings for Cronut
 
-[![Cronut Test](https://github.com/factorhouse/cronut/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/factorhouse/cronut/actions/workflows/ci.yml)
+[![Cronut Integrant Test](https://github.com/factorhouse/cronut-integrant/actions/workflows/ci.yml/badge.svg)](https://github.com/factorhouse/cronut-integrant/actions/workflows/ci.yml)
 [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut-integrant.svg)](https://clojars.org/io.factorhouse/cronut-integrant)
 
 # Summary
