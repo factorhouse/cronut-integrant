@@ -8,6 +8,8 @@
 Cronut-Integrant provides bindings for [Cronut](https://github.com/factorhouse/cronut)
 to [Integrant](https://github.com/weavejester/integrant), the DI micro-framework.
 
+Compatible with either [Cronut](https://github.com/factorhouse/cronut) or [Cronut-Javax](https://github.com/factorhouse/cronut-javax) depending on your requirement of Jakarta or Javax.
+
 ## Related Projects
 
 | Project                                                     | Desription                                                                                                   | Clojars Project                                                                                                                         |
