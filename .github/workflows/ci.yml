@@ -49,9 +49,9 @@ jobs:
           JAVA_HOME: /opt/jdk
         with:
           project: cronut-integrant
-          path: /target
+          path: target
           format: 'HTML'
-          out: cronut-integrant/reports
+          out: reports
           args: >
             --suppression ./dependency-check-suppressions.xml
 
@@ -60,5 +60,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nvd-cronut-integrant-${{ github.sha }}
-          path: cronut-integrant/reports/*
+          path: reports/*
           retention-days: 1
