@@ -1,4 +1,4 @@
-(defproject io.factorhouse/cronut-integrant "1.0.0"
+(defproject io.factorhouse/cronut-integrant "1.1.0"
 
   :description "Integrant bindings for Cronut"
 
