@@ -51,7 +51,7 @@ jobs:
           project: cronut-integrant
           path: /target
           format: 'HTML'
-          out: /reports
+          out: cronut-integrant/reports
           args: >
             --suppression ./dependency-check-suppressions.xml
 
@@ -60,5 +60,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nvd-cronut-integrant-${{ github.sha }}
-          path: /reports/*
+          path: cronut-integrant/reports/*
           retention-days: 1
