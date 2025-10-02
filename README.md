@@ -12,7 +12,7 @@ to [Integrant](https://github.com/weavejester/integrant), the DI micro-framework
 
 | Project                                                     | Desription                                                                                                   | Clojars Project                                                                                                                         |
 |-------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| [cronut](https://github.com/factorhouse/cronut)             | Cronut with [Jakarta](https://en.wikipedia.org/wiki/Jakarta_EE) support (Primary)                            | [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut-javax.svg)](https://clojars.org/io.factorhouse/cronut)       |
+| [cronut](https://github.com/factorhouse/cronut)             | Cronut with [Jakarta](https://en.wikipedia.org/wiki/Jakarta_EE) support (Primary)                            | [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut.svg)](https://clojars.org/io.factorhouse/cronut)       |
 | [cronut-javax](https://github.com/factorhouse/cronut-javax) | Cronut with [Javax](https://jakarta.ee/blogs/javax-jakartaee-namespace-ecosystem-progress/) support (Legacy) | [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut-javax.svg)](https://clojars.org/io.factorhouse/cronut-javax) |
 
 # Contents
