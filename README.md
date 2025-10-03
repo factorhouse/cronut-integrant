@@ -59,9 +59,9 @@ Cronut provides access to the Quartz Scheduler, exposed via Integrant with `:cro
 
 The scheduler supports the following fields:
 
-1. `:schedule`: (required) - a sequence of 'items' to schedule, each being a map containing a :job:, :opts, and :trigger
-2. `:concurrent-execution-disallowed?`: (optional, default false) - run all jobs with @DisableConcurrentExecution
-3. `:update-check?`: (optional, default false) - check for Quartz updates on system startup
+1. `:schedule`: `items` to schedule, each being a map containing a :job:, :opts, and :trigger
+2. `:concurrent-execution-disallowed?`: run all jobs with @DisableConcurrentExecution
+3. `:update-check?`: check for Quartz updates on system startup
 
 ### Scheduler example
 
