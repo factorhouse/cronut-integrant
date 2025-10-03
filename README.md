@@ -116,8 +116,6 @@ or by returning a `defrecord` that implements the interface. e.g.
 Cronut supports further Quartz configuration of jobs (identity, description, recovery, and durability) by configuring an
 optional `opts` map for each scheduled item.
 
-Concurrent execution can be controlled on a per-job bases with the `disallow-concurrent-execution?` flag in `opts`.
-
 ### Job example
 
 **Job definition**
@@ -416,13 +414,19 @@ Helper functions source: [test/cronut/integration-test.clj](test/cronut/integrat
 ### Logs of the running system
 
 ```bash
-16:29:37.378 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – initializing scheduler
-16:29:37.378 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – with quartz update check disabled
-16:29:37.387 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.impl.StdSchedulerFactory – Using default implementation for ThreadExecutor
-16:29:37.392 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] o.quartz.core.SchedulerSignalerImpl – Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
-16:29:37.392 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.core.QuartzScheduler – Quartz Scheduler v2.5.0 created.
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.simpl.RAMJobStore – RAMJobStore initialized.
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.core.QuartzScheduler – Scheduler meta-data: Quartz Scheduler (v2.5.0) 'CronutScheduler' with instanceId 'NON_CLUSTERED'
+Connecting to local nREPL server...
+Clojure 1.12.3
+nREPL server started on port 54313 on host 127.0.0.1 - nrepl://127.0.0.1:54313
+(do
+  (require '[cronut.integration-test :as test])
+  (test/init-system))
+17:49:32.071 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – initializing scheduler
+17:49:32.072 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – with quartz update check disabled
+17:49:32.081 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.impl.StdSchedulerFactory – Using default implementation for ThreadExecutor
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] o.quartz.core.SchedulerSignalerImpl – Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – Quartz Scheduler v2.4.0 created.
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.simpl.RAMJobStore – RAMJobStore initialized.
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – Scheduler meta-data: Quartz Scheduler (v2.4.0) 'CronutScheduler' with instanceId 'NON_CLUSTERED'
   Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
   NOT STARTED.
   Currently in standby mode.
@@ -430,66 +434,63 @@ Helper functions source: [test/cronut/integration-test.clj](test/cronut/integrat
   Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 6 threads.
   Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
 
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.impl.StdSchedulerFactory – Quartz scheduler 'CronutScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.impl.StdSchedulerFactory – Quartz scheduler version: 2.5.0
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – with global concurrent execution disallowed
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.core.QuartzScheduler – JobFactory set to: cronut.job$factory$reify__12146@101e15ee
-16:29:37.393 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling [7] jobs
-16:29:37.401 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new job #object[org.quartz.impl.triggers.SimpleTriggerImpl 0x467fb22c Trigger 'DEFAULT.6da64b5bd2ee-880e78bc-4873-42b3-9b5a-64bcfce6f5a1':  triggerClass: 'org.quartz.impl.triggers.SimpleTriggerImpl calendar: 'null' misfireInstruction: 0 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0x28117587 JobDetail 'DEFAULT.6da64b5bd2ee-b8c8c92a-b907-4859-b28a-6be8f4f41fea':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: false]
-16:29:37.402 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new job #object[org.quartz.impl.triggers.SimpleTriggerImpl 0x3cd7003b Trigger 'test.trigger-two':  triggerClass: 'org.quartz.impl.triggers.SimpleTriggerImpl calendar: 'null' misfireInstruction: 0 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0x737df17e JobDetail 'test-name.test-group':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: true]
-16:29:37.402 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new trigger for existing job #object[org.quartz.impl.triggers.SimpleTriggerImpl 0x41c1388d Trigger 'DEFAULT.6da64b5bd2ee-c94286ad-ab6a-4539-92db-4bcf467f77fd':  triggerClass: 'org.quartz.impl.triggers.SimpleTriggerImpl calendar: 'null' misfireInstruction: 0 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0x1e1c028d JobDetail 'test-name.test-group':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: true]
-16:29:37.403 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new trigger for existing job #object[org.quartz.impl.triggers.CronTriggerImpl 0x78817b4e Trigger 'DEFAULT.6da64b5bd2ee-f706f964-b8c2-4d55-b7a5-a9a4c5795f4f':  triggerClass: 'org.quartz.impl.triggers.CronTriggerImpl calendar: 'null' misfireInstruction: 0 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0x36fdd3e3 JobDetail 'test-name.test-group':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: true]
-16:29:37.404 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new trigger for existing job #object[org.quartz.impl.triggers.CronTriggerImpl 0x44d4758e Trigger 'test.trigger-five':  triggerClass: 'org.quartz.impl.triggers.CronTriggerImpl calendar: 'null' misfireInstruction: 0 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0x6ee1851e JobDetail 'test-name.test-group':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: true]
-16:29:37.404 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new trigger for existing job #object[org.quartz.impl.triggers.CronTriggerImpl 0x4900a5b0 Trigger 'DEFAULT.6da64b5bd2ee-31aa5433-c5d3-4ddd-b21e-04a2d4920548':  triggerClass: 'org.quartz.impl.triggers.CronTriggerImpl calendar: 'null' misfireInstruction: 0 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0xc979851 JobDetail 'test-name.test-group':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: true]
-16:29:37.404 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] cronut – scheduling new job #object[org.quartz.impl.triggers.CronTriggerImpl 0x6b88f448 Trigger 'DEFAULT.6da64b5bd2ee-6fd7a0a0-bf32-4256-8c27-a2b29f11d5ef':  triggerClass: 'org.quartz.impl.triggers.CronTriggerImpl calendar: 'null' misfireInstruction: 2 nextFireTime: null] #object[org.quartz.impl.JobDetailImpl 0x9a35552 JobDetail 'DEFAULT.6da64b5bd2ee-c6c26ace-ce1a-44ed-b922-096a3f5233f4':  jobClass: 'cronut.job.SerialProxyJob concurrentExecutionDisallowed: true persistJobDataAfterExecution: false isDurable: false requestsRecovers: false]
-16:29:37.405 INFO  [nREPL-session-03644f18-045b-47e8-b0be-5c9b069c6ee0] org.quartz.core.QuartzScheduler – Scheduler CronutScheduler_$_NON_CLUSTERED started.
-16:29:37.406 INFO  [CronutScheduler_Worker-1] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:37.408 INFO  [CronutScheduler_Worker-2] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:37.409 INFO  [CronutScheduler_Worker-3] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.impl.StdSchedulerFactory – Quartz scheduler 'CronutScheduler' initialized from default resource file in Quartz package: 'quartz.properties'
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.impl.StdSchedulerFactory – Quartz scheduler version: 2.4.0
+17:49:32.085 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – with global concurrent execution disallowed
+17:49:32.086 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – JobFactory set to: cronut.job$factory$reify__2885@6b1b29a8
+17:49:32.086 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling [7] jobs
+17:49:32.088 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new job DEFAULT.6da64b5bd2ee-bad9b344-eb35-48c2-a2e9-74a16dae0b7a {:description test job 1, identity auto-generated}
+17:49:32.089 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new job group1.job2 {:name job2, :group group1, :description test job 2, identity by name and group, :recover? true, :durable? false, :dep-one {:a 1}, :dep-two #object[job$eval13079$fn$reify__13081 0x12d12097 job$eval13079$fn$reify__13081@12d12097]}
+17:49:32.089 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new trigger for existing job group1.job2 {:name job2, :group group1, :description test job 2, identity by name and group, :recover? true, :durable? false, :dep-one {:a 1}, :dep-two #object[job$eval13079$fn$reify__13081 0x12d12097 job$eval13079$fn$reify__13081@12d12097]}
+17:49:32.090 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new trigger for existing job group1.job2 {:name job2, :group group1, :description test job 2, identity by name and group, :recover? true, :durable? false, :dep-one {:a 1}, :dep-two #object[job$eval13079$fn$reify__13081 0x12d12097 job$eval13079$fn$reify__13081@12d12097]}
+17:49:32.090 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new trigger for existing job group1.job2 {:name job2, :group group1, :description test job 2, identity by name and group, :recover? true, :durable? false, :dep-one {:a 1}, :dep-two #object[job$eval13079$fn$reify__13081 0x12d12097 job$eval13079$fn$reify__13081@12d12097]}
+17:49:32.091 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new trigger for existing job group1.job2 {:name job2, :group group1, :description test job 2, identity by name and group, :recover? true, :durable? false, :dep-one {:a 1}, :dep-two #object[job$eval13079$fn$reify__13081 0x12d12097 job$eval13079$fn$reify__13081@12d12097]}
+17:49:32.091 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] cronut – scheduling new job DEFAULT.job3 {:name job3, :description test job 3, identity by name only - default group}
+17:49:32.091 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – Scheduler CronutScheduler_$_NON_CLUSTERED started.
 =>
 {:dep/one {:a 1},
- :test.job/one #object[cronut.integration_test$eval13104$fn$reify__13106
-                       0x45425cf3
-                       "cronut.integration_test$eval13104$fn$reify__13106@45425cf3"],
- :test.job/three #object[cronut.integration_test$eval13115$fn$reify__13117
-                         0x7527011a
-                         "cronut.integration_test$eval13115$fn$reify__13117@7527011a"],
- :test.job/two #cronut.integration_test.TestDefrecordJobImpl{:identity ["test-group" "test-name"],
-                                                             :description "test job",
-                                                             :recover? true,
-                                                             :durable? false,
-                                                             :test-dep nil,
-                                                             :disallow-concurrent-execution? nil,
-                                                             :dep-one {:a 1},
-                                                             :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106
-                                                                              0x45425cf3
-                                                                              "cronut.integration_test$eval13104$fn$reify__13106@45425cf3"]},
- :cronut/scheduler #object[org.quartz.impl.StdScheduler 0x59a18142 "org.quartz.impl.StdScheduler@59a18142"]}
-16:29:39.368 INFO  [CronutScheduler_Worker-4] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:40.005 INFO  [CronutScheduler_Worker-5] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:40.005 INFO  [CronutScheduler_Worker-6] cronut.integration-test – 3979b197-5683-47a9-a267-dcaded343697 Reified Impl (Job Delay 7s): {}
-16:29:40.006 INFO  [CronutScheduler_Worker-1] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:40.876 INFO  [CronutScheduler_Worker-2] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:41.368 INFO  [CronutScheduler_Worker-3] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:42.004 INFO  [CronutScheduler_Worker-4] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:43.364 INFO  [CronutScheduler_Worker-5] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:44.007 INFO  [CronutScheduler_Worker-1] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:44.375 INFO  [CronutScheduler_Worker-2] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:45.368 INFO  [CronutScheduler_Worker-3] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:47.011 INFO  [CronutScheduler_Worker-6] cronut.integration-test – 3979b197-5683-47a9-a267-dcaded343697 Finished
-16:29:47.368 INFO  [CronutScheduler_Worker-4] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:47.875 INFO  [CronutScheduler_Worker-5] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:48.008 INFO  [CronutScheduler_Worker-1] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:48.010 INFO  [CronutScheduler_Worker-2] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:48.011 INFO  [CronutScheduler_Worker-3] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:49.370 INFO  [CronutScheduler_Worker-6] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:50.004 INFO  [CronutScheduler_Worker-4] cronut.integration-test – 299b73c8-97ad-4d85-848f-35960ced6362 Reified Impl (Job Delay 7s): {}
-16:29:51.368 INFO  [CronutScheduler_Worker-5] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:51.368 INFO  [CronutScheduler_Worker-1] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:52.004 INFO  [CronutScheduler_Worker-2] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:53.366 INFO  [CronutScheduler_Worker-3] cronut.integration-test – Reified Impl: {:dep-one {:a 1}}
-16:29:54.007 INFO  [CronutScheduler_Worker-6] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
-16:29:54.874 INFO  [CronutScheduler_Worker-5] cronut.integration-test – Defrecord Impl: #cronut.integration_test.TestDefrecordJobImpl{:identity [test-group test-name], :description test job, :recover? true, :durable? false, :test-dep nil, :disallow-concurrent-execution? nil, :dep-one {:a 1}, :dep-two #object[cronut.integration_test$eval13104$fn$reify__13106 0x45425cf3 cronut.integration_test$eval13104$fn$reify__13106@45425cf3]}
+ :job/one #object[job$eval13079$fn$reify__13081 0x12d12097 "job$eval13079$fn$reify__13081@12d12097"],
+ :job/three #object[job$eval13106$fn$reify__13108 0x3ce9555 "job$eval13106$fn$reify__13108@3ce9555"],
+ :job/two #job.TestDefrecordJobImpl{},
+ :job/two-opts {:name "job2",
+                :group "group1",
+                :description "test job 2, identity by name and group",
+                :recover? true,
+                :durable? false,
+                :dep-one {:a 1},
+                :dep-two #object[job$eval13079$fn$reify__13081 0x12d12097 "job$eval13079$fn$reify__13081@12d12097"]},
+ :cronut/scheduler #object[org.quartz.impl.StdScheduler 0x13778940 "org.quartz.impl.StdScheduler@13778940"]}
+17:49:32.094 INFO  [CronutScheduler_Worker-1] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:32.094 INFO  [CronutScheduler_Worker-2] job – Reified Impl: {:dep-one {:a 1}}
+17:49:32.096 INFO  [CronutScheduler_Worker-3] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:32.096 INFO  [CronutScheduler_Worker-4] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:32.097 INFO  [CronutScheduler_Worker-5] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:34.059 INFO  [CronutScheduler_Worker-6] job – Reified Impl: {:dep-one {:a 1}}
+17:49:35.006 INFO  [CronutScheduler_Worker-1] job – b41561ba-7aa9-407f-ae68-20c268dfbd33 Reified Impl (Job Delay 7s): {}
+17:49:35.569 INFO  [CronutScheduler_Worker-2] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:36.006 INFO  [CronutScheduler_Worker-3] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:36.007 INFO  [CronutScheduler_Worker-4] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:36.062 INFO  [CronutScheduler_Worker-5] job – Reified Impl: {:dep-one {:a 1}}
+17:49:38.063 INFO  [CronutScheduler_Worker-6] job – Reified Impl: {:dep-one {:a 1}}
+17:49:39.066 INFO  [CronutScheduler_Worker-2] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:40.006 INFO  [CronutScheduler_Worker-3] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:40.008 INFO  [CronutScheduler_Worker-4] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:40.062 INFO  [CronutScheduler_Worker-5] job – Reified Impl: {:dep-one {:a 1}}
+17:49:42.005 INFO  [CronutScheduler_Worker-6] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:42.013 INFO  [CronutScheduler_Worker-1] job – b41561ba-7aa9-407f-ae68-20c268dfbd33 Finished
+17:49:42.062 INFO  [CronutScheduler_Worker-2] job – Reified Impl: {:dep-one {:a 1}}
+17:49:42.569 INFO  [CronutScheduler_Worker-3] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:44.006 INFO  [CronutScheduler_Worker-4] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+17:49:44.063 INFO  [CronutScheduler_Worker-5] job – Reified Impl: {:dep-one {:a 1}}
+17:49:45.001 INFO  [CronutScheduler_Worker-6] job – a6805418-0a31-44f2-8c55-e686152f800f Reified Impl (Job Delay 7s): {}
+17:49:46.062 INFO  [CronutScheduler_Worker-1] job – Reified Impl: {:dep-one {:a 1}}
+17:49:46.062 INFO  [CronutScheduler_Worker-2] job – Defrecord Impl: #job.TestDefrecordJobImpl{}
+(test/halt-system *1)
+17:49:46.984 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – Scheduler CronutScheduler_$_NON_CLUSTERED shutting down.
+17:49:46.984 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – Scheduler CronutScheduler_$_NON_CLUSTERED paused.
+17:49:46.984 INFO  [nREPL-session-6fa69f5a-b19c-48cf-9b7f-20bda624be80] org.quartz.core.QuartzScheduler – Scheduler CronutScheduler_$_NON_CLUSTERED shutdown complete.
+=> nil
+17:49:52.007 INFO  [CronutScheduler_Worker-6] job – a6805418-0a31-44f2-8c55-e686152f800f Finished
 ```
 
 ### Stopping the system
