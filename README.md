@@ -83,7 +83,8 @@ The scheduler supports the following fields:
                       :trigger #cronut/trigger {:type        :simple
                                                 :interval    3000
                                                 :repeat      :forever
-                                                :identity    ["trigger-two" "test"]
+                                                :name        "trigger-two"
+                                                :group       "test-group"
                                                 :description "test trigger"
                                                 :start       #inst "2019-01-01T00:00:00.000-00:00"
                                                 :end         #inst "2019-02-01T00:00:00.000-00:00"
@@ -189,7 +190,8 @@ The `#cronut/trigger` tagged literal supports the full set of Quartz configurati
 :trigger #cronut/trigger {:type        :simple
                           :interval    3000
                           :repeat      :forever
-                          :identity    ["trigger-two" "test"]
+                          :name        "trigger-two"
+                          :group       "test-group"
                           :description "sample simple trigger"
                           :start       #inst "2019-01-01T00:00:00.000-00:00"
                           :end         #inst "2019-02-01T00:00:00.000-00:00"
@@ -199,7 +201,8 @@ The `#cronut/trigger` tagged literal supports the full set of Quartz configurati
 ;;cron
 :trigger #cronut/trigger {:type        :cron
                           :cron        "*/6 * * * * ?"
-                          :identity    ["trigger-five" "test"]
+                          :name        "trigger-five"
+                          :group       "test-group"
                           :description "sample cron trigger"
                           :start       #inst "2018-01-01T00:00:00.000-00:00"
                           :end         #inst "2029-02-01T00:00:00.000-00:00"
@@ -292,7 +295,8 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
                                                         :trigger #cronut/trigger {:type        :simple
                                                                                   :interval    3000
                                                                                   :repeat      :forever
-                                                                                  :identity    ["trigger-two" "test"]
+                                                                                  :name        "trigger-two"
+                                                                                  :group       "test-group"
                                                                                   :description "test trigger"
                                                                                   :start       #inst "2019-01-01T00:00:00.000-00:00"
                                                                                   :end         #inst "2019-02-01T00:00:00.000-00:00"
@@ -314,7 +318,8 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
                                                         :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type        :cron
                                                                                   :cron        "*/6 * * * * ?"
-                                                                                  :identity    ["trigger-five" "test"]
+                                                                                  :name        "trigger-five"
+                                                                                  :group       "test-group"
                                                                                   :description "another-test trigger"
                                                                                   :start       #inst "2018-01-01T00:00:00.000-00:00"
                                                                                   :end         #inst "2029-02-01T00:00:00.000-00:00"
@@ -334,7 +339,6 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
                                                         :trigger #cronut/trigger {:type    :cron
                                                                                   :cron    "*/5 * * * * ?"
                                                                                   :misfire :do-nothing}}]}}
-
 ````
 
 ## Job definitions
