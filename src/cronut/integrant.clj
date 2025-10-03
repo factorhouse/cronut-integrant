@@ -1,6 +1,5 @@
 (ns cronut.integrant
-  (:require [clojure.tools.logging :as log]
-            [cronut :as cronut]
+  (:require [cronut :as cronut]
             [cronut.trigger]
             [integrant.core :as ig]))
 
