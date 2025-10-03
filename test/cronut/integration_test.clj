@@ -3,14 +3,10 @@
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
             [cronut.integrant :as cig]
-            [integrant.core :as ig])
+            [integrant.core :as ig]
+            [job])
   (:import (java.util UUID)
            (org.quartz Job)))
-
-(defrecord TestDefrecordJobImpl [identity description recover? durable? test-dep disallow-concurrent-execution?]
-  Job
-  (execute [this _job-context]
-    (log/info "Defrecord Impl:" this)))
 
 (defmethod ig/init-key :dep/one
   [_ config]
@@ -21,10 +17,6 @@
   (reify Job
     (execute [_this _job-context]
       (log/info "Reified Impl:" config))))
-
-(defmethod ig/init-key :test.job/two
-  [_ config]
-  (map->TestDefrecordJobImpl config))
 
 (defmethod ig/init-key :test.job/three
   [_ config]

@@ -2,8 +2,10 @@
 
  :test.job/one     {:dep-one #ig/ref :dep/one}
 
- :test.job/two     {:identity    ["name1" "group2"]
-                    :description "test job"
+ :job/two          {}
+ :job/two-opts     {:name        "job2"
+                    :group       "group1"
+                    :description "test job 2, identity by name and group"
                     :recover?    true
                     :durable?    false
                     :dep-one     #ig/ref :dep/one
@@ -15,13 +17,15 @@
                     :concurrent-execution-disallowed? true
                     :schedule                         [;; basic interval
                                                        {:job     #ig/ref :test.job/one
+                                                        :opts    {:description "test job 1, identity auto-generated"}
                                                         :trigger #cronut/trigger {:type      :simple
                                                                                   :interval  2
                                                                                   :time-unit :seconds
                                                                                   :repeat    :forever}}
 
                                                        ;; full interval
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type        :simple
                                                                                   :interval    3000
                                                                                   :repeat      :forever
@@ -32,16 +36,19 @@
                                                                                   :priority    5}}
 
                                                        ;; shortcut interval
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/interval 3500}
 
                                                        ;; basic cron
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type :cron
                                                                                   :cron "*/4 * * * * ?"}}
 
                                                        ;; full cron
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type        :cron
                                                                                   :cron        "*/6 * * * * ?"
                                                                                   :identity    ["trigger-five" "test"]
@@ -52,12 +59,15 @@
                                                                                   :priority    4}}
 
                                                        ;; shortcut cron
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/cron "*/8 * * * * ?"}
 
                                                        ;; Note: This job misfires because it takes 7 seconds to run, but runs every 5 seconds, and isn't allowed to run concurrently with {:disallowConcurrentExecution? true}
                                                        ;;       So every second job fails to run, and is just ignored with the :do-nothing :misfire rule
                                                        {:job     #ig/ref :test.job/three
+                                                        :opts    {:name        "job3"
+                                                                  :description "test job 3, identity by name only - default group"}
                                                         :trigger #cronut/trigger {:type    :cron
                                                                                   :cron    "*/5 * * * * ?"
                                                                                   :misfire :do-nothing}}]}}
