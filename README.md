@@ -8,13 +8,14 @@
 Cronut-Integrant provides bindings for [Cronut](https://github.com/factorhouse/cronut)
 to [Integrant](https://github.com/weavejester/integrant), the DI micro-framework.
 
-Compatible with either [Cronut](https://github.com/factorhouse/cronut) or [Cronut-Javax](https://github.com/factorhouse/cronut-javax) depending on your requirement of Jakarta or Javax.
+Compatible with either [Cronut](https://github.com/factorhouse/cronut)
+or [Cronut-Javax](https://github.com/factorhouse/cronut-javax) depending on your requirement of Jakarta or Javax.
 
 ## Related Projects
 
 | Project                                                     | Desription                                                                                                   | Clojars Project                                                                                                                         |
 |-------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| [cronut](https://github.com/factorhouse/cronut)             | Cronut with [Jakarta](https://en.wikipedia.org/wiki/Jakarta_EE) support (Primary)                            | [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut.svg)](https://clojars.org/io.factorhouse/cronut)       |
+| [cronut](https://github.com/factorhouse/cronut)             | Cronut with [Jakarta](https://en.wikipedia.org/wiki/Jakarta_EE) support (Primary)                            | [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut.svg)](https://clojars.org/io.factorhouse/cronut)             |
 | [cronut-javax](https://github.com/factorhouse/cronut-javax) | Cronut with [Javax](https://jakarta.ee/blogs/javax-jakartaee-namespace-ecosystem-progress/) support (Legacy) | [![Clojars Project](https://img.shields.io/clojars/v/io.factorhouse/cronut-javax.svg)](https://clojars.org/io.factorhouse/cronut-javax) |
 
 # Contents
@@ -48,25 +49,44 @@ Compatible with either [Cronut](https://github.com/factorhouse/cronut) or [Cronu
 
 A quartz `scheduler` runs a `job` on a schedule defined by a `trigger`.
 
+A `job` or `trigger` is uniquely identified by a `key` consisting of a `name` and (optional) `group`.
+
+A `job` can have multiple `triggers`, a `trigger` is for a single `job` only.
+
 ## `:cronut/scheduler` definition
 
 Cronut provides access to the Quartz Scheduler, exposed via Integrant with `:cronut/scheduler`
 
 The scheduler supports the following fields:
 
-1. `:schedule`: (required) - a sequence of 'items' to schedule, each being a map containing a :job and :trigger
+1. `:schedule`: (required) - a sequence of 'items' to schedule, each being a map containing a :job:, :opts, and :trigger
 2. `:concurrent-execution-disallowed?`: (optional, default false) - run all jobs with @DisableConcurrentExecution
 3. `:update-check?`: (optional, default false) - check for Quartz updates on system startup
 
 ### Scheduler example
 
 ````clojure
-:cronut/scheduler {:schedule                         [{:job     #ig/ref :test.job/two
-                                                       :trigger #cronut/interval 3500}
-                                                      {:job     #ig/ref :test.job/two
-                                                       :trigger #cronut/cron "*/8 * * * * ?"
-                                                       :misfire :do-nothing}]
-                   :concurrent-execution-disallowed? true}
+ :cronut/scheduler {:update-check?                    false
+                    :concurrent-execution-disallowed? true
+                    :schedule                         [;; basic interval
+                                                       {:job     #ig/ref :test.job/one
+                                                        :opts    {:description "test job 1, identity auto-generated"}
+                                                        :trigger #cronut/trigger {:type      :simple
+                                                                                  :interval  2
+                                                                                  :time-unit :seconds
+                                                                                  :repeat    :forever}}
+
+                                                       ;; full interval
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
+                                                        :trigger #cronut/trigger {:type        :simple
+                                                                                  :interval    3000
+                                                                                  :repeat      :forever
+                                                                                  :identity    ["trigger-two" "test"]
+                                                                                  :description "test trigger"
+                                                                                  :start       #inst "2019-01-01T00:00:00.000-00:00"
+                                                                                  :end         #inst "2019-02-01T00:00:00.000-00:00"
+                                                                                  :priority    5}}
 ````
 
 ## `:job` definition
@@ -93,22 +113,45 @@ or by returning a `defrecord` that implements the interface. e.g.
   (map->TestDefrecordJobImpl config))
 ````
 
-Cronut supports further Quartz configuration of jobs (identity, description, recovery, and durability) by expecting
-those values to be assoc'd onto your job. You do not have to set them (in fact in most cases you can likely ignore
-them), however if you do want that control you will likely use the `defrecord` approach as opposed to `reify`.
+Cronut supports further Quartz configuration of jobs (identity, description, recovery, and durability) by configuring an
+optional `opts` map for each scheduled item.
 
-Concurrent execution can be controlled on a per-job bases with the `disallow-concurrent-execution?` flag.
+Concurrent execution can be controlled on a per-job bases with the `disallow-concurrent-execution?` flag in `opts`.
 
 ### Job example
 
+**Job definition**
+
 ````clojure
-:test.job/two {:identity                       ["job-two" "test"]
-               :description                    "test job"
-               :recover?                       true
-               :durable?                       false
-               :disallow-concurrent-execution? true
-               :dep-one                        #ig/ref :dep/one
-               :dep-two                        #ig/ref :test.job/one}
+(ns job
+  (:require [clojure.tools.logging :as log])
+  (:import (org.quartz Job)))
+
+(defrecord TestDefrecordJobImpl []
+  Job
+  (execute [this _job-context]
+    (log/info "Defrecord Impl:" this)))
+
+;; These two functions are called by Integrant on system startup, see:
+;; https://github.com/weavejester/integrant?tab=readme-ov-file#initializer-functions
+(defn two
+  [config]
+  (map->TestDefrecordJobImpl config))
+
+(def two-opts identity)
+````
+
+**Job options**
+
+````clojure
+:job/two          {}
+:job/two-opts     {:name        "job2"
+                   :group       "group1"
+                   :description "test job 2, identity by name and group"
+                   :recover?    true
+                   :durable?    false
+                   :dep-one     #ig/ref :dep/one
+                   :dep-two     #ig/ref :test.job/one}
 ````                    
 
 ## `:trigger` definition
@@ -212,7 +255,7 @@ e.g.
 # Example system
 
 This repository contains an example system composed of of integratant configuration, job definitions, and helper
-functions.
+functions, see the [test](/test) directory.
 
 ## Configuration
 
@@ -221,28 +264,32 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
 ````clojure
 {:dep/one          {:a 1}
 
- :test.job/one     {:dep-one #ig/ref :dep/one}
+ :job/one          {:dep-one #ig/ref :dep/one}
 
- :test.job/two     {:identity    ["name1" "group2"]
-                    :description "test job"
+ :job/two          {}
+ :job/two-opts     {:name        "job2"
+                    :group       "group1"
+                    :description "test job 2, identity by name and group"
                     :recover?    true
                     :durable?    false
                     :dep-one     #ig/ref :dep/one
-                    :dep-two     #ig/ref :test.job/one}
+                    :dep-two     #ig/ref :job/one}
 
- :test.job/three   {}
+ :job/three        {}
 
  :cronut/scheduler {:update-check?                    false
                     :concurrent-execution-disallowed? true
                     :schedule                         [;; basic interval
-                                                       {:job     #ig/ref :test.job/one
+                                                       {:job     #ig/ref :job/one
+                                                        :opts    {:description "test job 1, identity auto-generated"}
                                                         :trigger #cronut/trigger {:type      :simple
                                                                                   :interval  2
                                                                                   :time-unit :seconds
                                                                                   :repeat    :forever}}
 
                                                        ;; full interval
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type        :simple
                                                                                   :interval    3000
                                                                                   :repeat      :forever
@@ -253,16 +300,19 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
                                                                                   :priority    5}}
 
                                                        ;; shortcut interval
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/interval 3500}
 
                                                        ;; basic cron
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type :cron
                                                                                   :cron "*/4 * * * * ?"}}
 
                                                        ;; full cron
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/trigger {:type        :cron
                                                                                   :cron        "*/6 * * * * ?"
                                                                                   :identity    ["trigger-five" "test"]
@@ -273,12 +323,15 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
                                                                                   :priority    4}}
 
                                                        ;; shortcut cron
-                                                       {:job     #ig/ref :test.job/two
+                                                       {:job     #ig/ref :job/two
+                                                        :opts    #ig/ref :job/two-opts
                                                         :trigger #cronut/cron "*/8 * * * * ?"}
 
                                                        ;; Note: This job misfires because it takes 7 seconds to run, but runs every 5 seconds, and isn't allowed to run concurrently with {:disallowConcurrentExecution? true}
                                                        ;;       So every second job fails to run, and is just ignored with the :do-nothing :misfire rule
-                                                       {:job     #ig/ref :test.job/three
+                                                       {:job     #ig/ref :job/three
+                                                        :opts    {:name        "job3"
+                                                                  :description "test job 3, identity by name only - default group"}
                                                         :trigger #cronut/trigger {:type    :cron
                                                                                   :cron    "*/5 * * * * ?"
                                                                                   :misfire :do-nothing}}]}}
@@ -287,29 +340,40 @@ Integrant configuration source: [dev-resources/config.edn](dev-resources/config.
 
 ## Job definitions
 
-Job definitions source: [test/cronut/integration-test.clj](test/cronut/integration_test.clj)
+Job definitions source: [test/job.clj](test/job.clj)
 
 ```clojure
-(defrecord TestDefrecordJobImpl [identity description recover? durable? test-dep disallow-concurrent-execution?]
-  Job
-  (execute [this _job-context]
-    (log/info "Defrecord Impl:" this)))
+(ns job
+  (:require [clojure.core.async :as async]
+            [clojure.tools.logging :as log]
+            [integrant.core :as ig])
+  (:import (java.util UUID)
+           (org.quartz Job)))
 
 (defmethod ig/init-key :dep/one
   [_ config]
   config)
 
-(defmethod ig/init-key :test.job/one
+(defmethod ig/init-key ::one
   [_ config]
   (reify Job
     (execute [_this _job-context]
       (log/info "Reified Impl:" config))))
 
-(defmethod ig/init-key :test.job/two
-  [_ config]
+(defrecord TestDefrecordJobImpl []
+  Job
+  (execute [this _job-context]
+    (log/info "Defrecord Impl:" this)))
+
+;; These next two functions are called by Integrant on system startup, see:
+;; https://github.com/weavejester/integrant?tab=readme-ov-file#initializer-functions
+(defn two
+  [config]
   (map->TestDefrecordJobImpl config))
 
-(defmethod ig/init-key :test.job/three
+(def two-opts identity)
+
+(defmethod ig/init-key ::three
   [_ config]
   (reify Job
     (execute [_this _job-context]

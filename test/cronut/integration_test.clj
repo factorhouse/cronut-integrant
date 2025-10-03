@@ -1,31 +1,8 @@
 (ns cronut.integration-test
-  (:require [clojure.core.async :as async]
-            [clojure.java.io :as io]
-            [clojure.tools.logging :as log]
+  (:require [clojure.java.io :as io]
             [cronut.integrant :as cig]
             [integrant.core :as ig]
-            [job])
-  (:import (java.util UUID)
-           (org.quartz Job)))
-
-(defmethod ig/init-key :dep/one
-  [_ config]
-  config)
-
-(defmethod ig/init-key :test.job/one
-  [_ config]
-  (reify Job
-    (execute [_this _job-context]
-      (log/info "Reified Impl:" config))))
-
-(defmethod ig/init-key :test.job/three
-  [_ config]
-  (reify Job
-    (execute [_this _job-context]
-      (let [rand-id (str (UUID/randomUUID))]
-        (log/info rand-id "Reified Impl (Job Delay 7s):" config)
-        (async/<!! (async/timeout 7000))
-        (log/info rand-id "Finished")))))
+            [job]))
 
 (defn init-system
   "Example of starting integrant cronut systems with data-readers"

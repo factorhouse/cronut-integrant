@@ -1,6 +1,6 @@
 {:dep/one          {:a 1}
 
- :test.job/one     {:dep-one #ig/ref :dep/one}
+ :job/one          {:dep-one #ig/ref :dep/one}
 
  :job/two          {}
  :job/two-opts     {:name        "job2"
@@ -9,14 +9,14 @@
                     :recover?    true
                     :durable?    false
                     :dep-one     #ig/ref :dep/one
-                    :dep-two     #ig/ref :test.job/one}
+                    :dep-two     #ig/ref :job/one}
 
- :test.job/three   {}
+ :job/three        {}
 
  :cronut/scheduler {:update-check?                    false
                     :concurrent-execution-disallowed? true
                     :schedule                         [;; basic interval
-                                                       {:job     #ig/ref :test.job/one
+                                                       {:job     #ig/ref :job/one
                                                         :opts    {:description "test job 1, identity auto-generated"}
                                                         :trigger #cronut/trigger {:type      :simple
                                                                                   :interval  2
@@ -65,7 +65,7 @@
 
                                                        ;; Note: This job misfires because it takes 7 seconds to run, but runs every 5 seconds, and isn't allowed to run concurrently with {:disallowConcurrentExecution? true}
                                                        ;;       So every second job fails to run, and is just ignored with the :do-nothing :misfire rule
-                                                       {:job     #ig/ref :test.job/three
+                                                       {:job     #ig/ref :job/three
                                                         :opts    {:name        "job3"
                                                                   :description "test job 3, identity by name only - default group"}
                                                         :trigger #cronut/trigger {:type    :cron
