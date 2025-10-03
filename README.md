@@ -68,25 +68,26 @@ The scheduler supports the following fields:
 ````clojure
  :cronut/scheduler {:update-check?                    false
                     :concurrent-execution-disallowed? true
-                    :schedule                         [;; basic interval
-                                                       {:job     #ig/ref :test.job/one
-                                                        :opts    {:description "test job 1, identity auto-generated"}
-                                                        :trigger #cronut/trigger {:type      :simple
-                                                                                  :interval  2
-                                                                                  :time-unit :seconds
-                                                                                  :repeat    :forever}}
+                    :schedule
+                    [;; basic interval
+                     {:job     #ig/ref :test.job/one
+                      :opts    {:description "test job 1, identity auto-generated"}
+                      :trigger #cronut/trigger {:type      :simple
+                                                :interval  2
+                                                :time-unit :seconds
+                                                :repeat    :forever}}
 
-                                                       ;; full interval
-                                                       {:job     #ig/ref :job/two
-                                                        :opts    #ig/ref :job/two-opts
-                                                        :trigger #cronut/trigger {:type        :simple
-                                                                                  :interval    3000
-                                                                                  :repeat      :forever
-                                                                                  :identity    ["trigger-two" "test"]
-                                                                                  :description "test trigger"
-                                                                                  :start       #inst "2019-01-01T00:00:00.000-00:00"
-                                                                                  :end         #inst "2019-02-01T00:00:00.000-00:00"
-                                                                                  :priority    5}}
+                     ;; full interval
+                     {:job     #ig/ref :job/two
+                      :opts    #ig/ref :job/two-opts
+                      :trigger #cronut/trigger {:type        :simple
+                                                :interval    3000
+                                                :repeat      :forever
+                                                :identity    ["trigger-two" "test"]
+                                                :description "test trigger"
+                                                :start       #inst "2019-01-01T00:00:00.000-00:00"
+                                                :end         #inst "2019-02-01T00:00:00.000-00:00"
+                                                :priority    5}}
 ````
 
 ## `:job` definition
@@ -116,7 +117,7 @@ or by returning a `defrecord` that implements the interface. e.g.
 Cronut supports further Quartz configuration of jobs (identity, description, recovery, and durability) by configuring an
 optional `opts` map for each scheduled item.
 
-### Job example
+### Job integrant configuration
 
 **Job definition**
 
