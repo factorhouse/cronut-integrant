@@ -1,4 +1,4 @@
-(defproject io.factorhouse/cronut-integrant "1.2.0"
+(defproject io.factorhouse/cronut-integrant "1.2.1"
 
   :description "Integrant bindings for Cronut"
 
@@ -7,19 +7,19 @@
   :license {:name "Apache 2.0 License"
             :url  "https://github.com/factorhosue/slipway/blob/main/LICENSE"}
 
-  :plugins [[dev.weavejester/lein-cljfmt "0.13.4"]]
+  :plugins [[dev.weavejester/lein-cljfmt "0.15.3"]]
 
   :dependencies [[org.clojure/clojure "1.12.3"]
                  [org.clojure/tools.logging "1.3.0"]]
 
   :profiles {:dev     {:resource-paths ["dev-resources"]
                        :dependencies   [[integrant "0.13.1"]
-                                        [ch.qos.logback/logback-classic "1.5.19"]
+                                        [ch.qos.logback/logback-classic "1.5.20"]
                                         [org.slf4j/slf4j-api "2.0.17"]
                                         [org.clojure/core.async "1.8.741"]
-                                        [clj-kondo "2025.09.22" :exclusions [org.clojure/tools.reader]]]}
-             :jakarta {:dependencies [[io.factorhouse/cronut "1.2.0"]]}
-             :javax   {:dependencies [[io.factorhouse/cronut-javax "1.2.0"]]}
+                                        [clj-kondo "2025.10.23" :exclusions [org.clojure/tools.reader]]]}
+             :jakarta {:dependencies [[io.factorhouse/cronut "1.2.1"]]}
+             :javax   {:dependencies [[io.factorhouse/cronut-javax "1.2.1"]]}
              :smoke   {:pedantic? :abort}}
 
   :aliases {"check"  ["with-profile" "+smoke,+jakarta" "check"]

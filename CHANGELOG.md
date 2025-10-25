@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [1.2.1] - 2025-10-25
+
+- Update to 1.2.1 versions of cronut/cronut-javax
+
 ## [1.2.0] - 2025-10-03
 
 - Demonstrate configuration where jobs and opts are separate (as per Cronut 1.2.0)
