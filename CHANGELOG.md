@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [1.2.2] - 2026-03-31
+
+- Update to 1.2.3 versions of cronut/cronut-javax
+- Update minor dependencies
+- 
 ## [1.2.2] - 2026-01-06
 
 - Update to 1.2.2 versions of cronut/cronut-javax
